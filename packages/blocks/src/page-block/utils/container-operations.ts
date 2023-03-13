@@ -190,6 +190,7 @@ export function updateBlockType(
     }
     return [model];
   }
+  debugger
   // The lastNewId will not be null since we have checked models.length > 0
   const newModels: BaseBlockModel[] = [];
   models.forEach(model => {

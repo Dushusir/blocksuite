@@ -26,6 +26,7 @@ import { copyBlock } from '../../page-block/default/utils.js';
 // import { formatConfig } from '../../page-block/utils/const.js';
 import { updateBlockType } from '../../page-block/utils/index.js';
 import { toast } from '../toast.js';
+import { addUniver, univerContainer } from './docs.js';
 
 export type SlashItem = {
   name: string;
@@ -45,12 +46,26 @@ function insertContent(model: BaseBlockModel, text: string) {
   }
   const vRange = vEditor.getVRange();
   const index = vRange ? vRange.index : model.text.length;
+
+  // hack: sheet/doc/slide
+  const docs = ['sheet', 'doc', 'slide']
+  if (docs.includes(text)) {
+    addUniver(vEditor, text)
+    // text = '';
+    // return
+  }
   model.text.insert(text, index);
   // Update the caret to the end of the inserted text
   vEditor.setVRange({
     index: index + text.length,
     length: 0,
   });
+
+  const ke = new KeyboardEvent('keydown', {
+    bubbles: true, cancelable: true, keyCode: 13
+  });
+  vEditor._rootElement.dispatchEvent(ke);
+
 }
 
 const dividerItem: SlashItem = {
@@ -67,6 +82,38 @@ const dividerItem: SlashItem = {
 };
 
 export const menuGroups: { name: string; items: SlashItem[] }[] = [
+  {
+    name: 'Docs',
+    items: [
+      {
+        name: 'Sheet',
+        icon: TodayIcon,
+        action: ({ model }) => {
+          const date = new Date();
+          const strTime = date.toISOString().split('T')[0];
+          insertContent(model, 'sheet');
+        },
+      },
+      {
+        name: 'Doc',
+        icon: ImageIcon20,
+        action: ({ model }) => {
+          const date = new Date();
+          const strTime = date.toISOString().split('T')[0];
+          insertContent(model, 'doc');
+        },
+      },
+      {
+        name: 'Slide',
+        icon: NowIcon,
+        action: ({ model }) => {
+          const date = new Date();
+          const strTime = date.toISOString().split('T')[0];
+          insertContent(model, 'slide');
+        },
+      },
+    ],
+  },
   {
     name: 'Text',
     items: [

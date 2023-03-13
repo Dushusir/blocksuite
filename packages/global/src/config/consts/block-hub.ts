@@ -126,6 +126,14 @@ export const paragraphConfig = [
 export const BLOCKHUB_TEXT_ITEMS = [
   {
     flavour: 'affine:paragraph',
+    type: 'sheet',
+    name: 'Sheet',
+    description: 'Insert a sheet.',
+    icon: TextIcon,
+    tooltip: 'Drag to insert a sheet',
+  },
+  {
+    flavour: 'affine:paragraph',
     type: 'text',
     name: 'Text',
     description: 'Start typing with plain text.',

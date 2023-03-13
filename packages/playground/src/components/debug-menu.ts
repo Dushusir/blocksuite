@@ -247,22 +247,22 @@ export class DebugMenu extends NonShadowLitElement {
       );
     }
     if (changedProperties.has('_hasOffset')) {
-      const appRoot = document.getElementById('app');
+      const appRoot = document.getElementById('app-root');
       if (!appRoot) return;
       const style: Partial<CSSStyleDeclaration> = this._hasOffset
         ? {
-            margin: '60px 40px 240px 40px',
-            overflow: 'auto',
-            height: '400px',
-            boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
-          }
+          margin: '60px 40px 240px 40px',
+          overflow: 'auto',
+          height: '400px',
+          boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
+        }
         : {
-            margin: '0',
-            overflow: 'initial',
-            // edgeless needs the container height
-            height: '100%',
-            boxShadow: 'initial',
-          };
+          margin: '0',
+          overflow: 'initial',
+          // edgeless needs the container height
+          height: '100%',
+          boxShadow: 'initial',
+        };
       Object.assign(appRoot.style, style);
     }
     super.update(changedProperties);
@@ -341,7 +341,7 @@ export class DebugMenu extends NonShadowLitElement {
             <sl-menu>
               <sl-menu-item
                 @click=${(e: PointerEvent) =>
-                  this._convertToParagraph(e, 'text')}
+        this._convertToParagraph(e, 'text')}
               >
                 Text
               </sl-menu-item>
@@ -377,20 +377,20 @@ export class DebugMenu extends NonShadowLitElement {
               </sl-menu-item>
               <sl-menu-item
                 @click=${(e: PointerEvent) =>
-                  this._convertToParagraph(e, 'quote')}
+        this._convertToParagraph(e, 'quote')}
               >
                 Quote
               </sl-menu-item>
               <sl-divider></sl-divider>
               <sl-menu-item
                 @click=${(e: PointerEvent) =>
-                  this._convertToList(e, 'bulleted')}
+        this._convertToList(e, 'bulleted')}
               >
                 Bulleted List
               </sl-menu-item>
               <sl-menu-item
                 @click=${(e: PointerEvent) =>
-                  this._convertToList(e, 'numbered')}
+        this._convertToList(e, 'numbered')}
               >
                 Numbered List
               </sl-menu-item>

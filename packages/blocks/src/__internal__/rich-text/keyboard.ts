@@ -358,6 +358,8 @@ export function createKeyboardBindings(
     hardEnter: {
       key: 'Enter',
       handler(range, context) {
+        console.log('enter---');
+        
         return hardEnter(context.event, range, this.vEditor);
       },
     },
@@ -446,6 +448,7 @@ export function createKeyboardBindings(
       // see https://stackoverflow.com/questions/19127384/what-is-a-regex-to-match-only-an-empty-string
       // prefix: /[^\d]$|^(?![\s\S])/,
       handler(range, context) {
+        
         // TODO remove feature flag after slash menu is stable
         const flag = page.awarenessStore.getFlag('enable_slash_menu');
         if (!flag) {
