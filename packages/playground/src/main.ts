@@ -4,6 +4,8 @@ import '@blocksuite/editor';
 import './components/start-panel';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import '@blocksuite/editor/themes/affine.css';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import './custom.css'
 
 import { __unstableSchemas, builtInSchemas } from '@blocksuite/blocks/models';
 import std from '@blocksuite/blocks/std';
@@ -16,9 +18,10 @@ import {
   createWorkspaceOptions,
   defaultMode,
   initDebugConfig,
+  initDialog,
   initParam,
   isE2E,
-  tryInitExternalContent,
+  tryInitExternalContent
 } from './utils.js';
 
 const options = createWorkspaceOptions();
@@ -80,6 +83,7 @@ async function initPageContentByParam(workspace: Workspace, param: string) {
 }
 
 async function main() {
+  initDialog()
   const workspace = new Workspace(options)
     .register(builtInSchemas)
     .register(__unstableSchemas);
@@ -102,6 +106,7 @@ async function main() {
   const exampleList = document.createElement('start-panel');
   workspace.slots.pageAdded.once(() => exampleList.remove());
   document.body.prepend(exampleList);
+
 }
 
 main();

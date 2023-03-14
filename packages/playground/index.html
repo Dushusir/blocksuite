@@ -21,12 +21,101 @@
       .affine-default-page-block-title-container {
         margin-top: 78px;
       }
+
+      .dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+        display: none;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background-color: #fff;
+      }
+
+      .dialog-title {
+        margin: 0;
+      }
+
+      .close-dialog-btn {
+        border: none;
+        background-color: transparent;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .dialog-body {
+        padding: 1rem;
+        background-color: #fff;
+        height: calc(100vh - 159px);
+      }
+
+      .dialog-footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 1rem;
+        background-color: #fff;
+      }
+
+      .dialog-btn {
+        margin-left: 1rem;
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+      }
+
+      .dialog-btn:hover {
+        background-color: #0069d9;
+      }
+
+      .btn-fullscreen {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+        padding: 4px;
+        border-radius: 4px;
+      }
+
+      .btn-fullscreen:hover {
+        cursor: pointer;
+      }
+
+      .univer-dev-operation {
+        display: none;
+      }
+      .univer-demo {
+        position: relative;
+      }
     </style>
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
     <script type="module" src="./src/main.ts"></script>
     <div id="app-root"></div>
+    <div id="dialog" class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Univer</h3>
+        <button id="close-dialog" class="close-dialog-btn">×</button>
+      </div>
+      <div class="dialog-body">这是对话框的内容。</div>
+      <div class="dialog-footer">
+        <button id="cancel-btn" class="dialog-btn">取消</button>
+        <button id="confirm-btn" class="dialog-btn">确认</button>
+      </div>
+    </div>
     <script src="univer-preact-ts.iife.js"></script>
   </body>
 </html>

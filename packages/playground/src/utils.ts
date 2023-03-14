@@ -173,3 +173,23 @@ export function isValidUrl(urlLike: string) {
   }
   return url.protocol === 'http:' || url.protocol === 'https:';
 }
+
+export function initDialog() {
+  const closeDialogBtn = document.getElementById("close-dialog")!;
+  const cancelBtn = document.getElementById("cancel-btn")!;
+  const confirmBtn = document.getElementById("confirm-btn")!;
+  const dialog = document.getElementById("dialog")!;
+
+  closeDialogBtn.addEventListener("click", () => {
+    dialog.style.display = "none";
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    dialog.style.display = "none";
+  });
+
+  confirmBtn.addEventListener("click", () => {
+    // 执行确认操作
+    dialog.style.display = "none";
+  });
+}
