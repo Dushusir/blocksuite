@@ -65,6 +65,8 @@ function insertContent(model: BaseBlockModel, text: string) {
     bubbles: true, cancelable: true, keyCode: 13
   });
   vEditor._rootElement.dispatchEvent(ke);
+  console.log('vEditor._rootElement', vEditor._rootElement);
+
 
 }
 

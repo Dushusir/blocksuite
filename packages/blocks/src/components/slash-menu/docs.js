@@ -1,4 +1,4 @@
-export function univerContainer(demo) {
+export function univerContainer(demo, { toolbar = false, width = '100%', height = '360px', isFullscreen = true } = {}) {
 
     const div = document.createElement('div');
     const univerid = makeid(6)
@@ -6,13 +6,34 @@ export function univerContainer(demo) {
     div.id = "univer-demo";
     div.setAttribute("data-univerid", univerid)
     div.classList.add("univer-demo");
-    div.style.width = '400px';
-    div.style.height = '225px';
-    initUniverNew(demo, {
-        toolbar: false,
+    div.style.width = width;
+    div.style.height = height;
+
+    let config = {
+        toolbar,
         refs: div
-    })
+    }
+
+    if (!isFullscreen) {
+        config.innerLeft = true
+    }
+
+    initUniverNew(demo, config)
     stopImmediatePropagation(div)
+
+    if (isFullscreen) {
+        div.insertAdjacentHTML('afterbegin', '<span class="btn-fullscreen"><svg t="1678777083701" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M339.432 63.594H99.944c-19.851 0-36 16.149-36 36v239.488c0 17.673 14.327 32 32 32s32-14.327 32-32V127.594h211.487c17.673 0 32-14.327 32-32 0.001-17.673-14.326-32-31.999-32zM339.432 895.503H127.944V684.016c0-17.673-14.327-32-32-32s-32 14.327-32 32v239.487c0 19.851 16.149 36 36 36h239.487c17.673 0 32-14.327 32-32s-14.326-32-31.999-32zM928 651.915c-17.673 0-32 14.327-32 32v211.487H684.513c-17.673 0-32 14.327-32 32s14.327 32 32 32H924c19.851 0 36-16.149 36-36V683.915c0-17.673-14.327-32-32-32zM924 64.151H684.513c-17.673 0-32 14.327-32 32s14.327 32 32 32H896v211.488c0 17.673 14.327 32 32 32s32-14.327 32-32V100.151c0-19.851-16.149-36-36-36z" fill=""></path></svg></span>');
+        const btnFullscreen = div.querySelector('.btn-fullscreen');
+        btnFullscreen.addEventListener('click', () => {
+            // eslint-disable-next-line no-undef
+            const dialog = document.querySelector("#dialog");
+            const dialogBody = dialog.querySelector(".dialog-body");
+            dialogBody.innerHTML = '';
+            dialogBody.appendChild(univerContainer(demo, { toolbar: true, height: 'calc(100vh - 170px)', isFullscreen: false }))
+            dialog.style.display = "block";
+        })
+    }
+
 
     return div
 }
@@ -101,9 +122,9 @@ export function initSheetNew(setting) {
     }
 
     let columnCount = 13
-    if (window.innerWidth < 1366) {
-        columnCount = 7
-    }
+    // if (window.innerWidth < 1366) {
+    //     columnCount = 7
+    // }
     const config = {
         id: makeid(6),
         styles: null,
@@ -214,13 +235,18 @@ export function initDocNew(setting) {
             }
         },
     }
-    univerDocCustom({
+    const univerdoc = univerDocCustom({
         coreConfig,
         uiDocsConfig
     })
+
+    setTimeout(() => {
+        univerdoc._context.getPluginManager().getRequirePluginByName('document').calculatePagePosition();
+    }, 0);
+
 }
 export function initSlideNew(setting) {
-    const { toolbar, refs } = setting
+    const { toolbar, refs, innerLeft = false } = setting
     const { univerSlideCustom, UniverCore, CommonPluginData } = UniverPreactTs
     const { DEFAULT_SLIDE_DATA } = CommonPluginData
 
@@ -231,7 +257,7 @@ export function initSlideNew(setting) {
         container: refs,
         layout: {
             slideContainerConfig: {
-                innerLeft: false,
+                innerLeft,
                 innerRight: false,
                 outerLeft: false,
                 infoBar: false,
