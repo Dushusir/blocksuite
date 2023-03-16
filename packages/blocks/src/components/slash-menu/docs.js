@@ -145,9 +145,9 @@ export function initSheetNew(setting) {
     }
 
     let columnCount = 13
-    // if (window.innerWidth < 1366) {
-    //     columnCount = 7
-    // }
+    if (window.innerWidth < 1366) {
+        columnCount = 7
+    }
     const config = {
         id: makeid(6),
         styles: null,
@@ -158,7 +158,7 @@ export function initSheetNew(setting) {
                 type: 0,
                 id: 'sheet-01',
                 name: 'sheet1',
-                columnCount,
+                // columnCount,
                 status: 1,
                 cellData
             }

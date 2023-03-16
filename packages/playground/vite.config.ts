@@ -11,7 +11,7 @@ const enableIstanbul = !!process.env.CI || !!process.env.COVERAGE;
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: process.env.NODE_ENV === 'development' ? '' : '/affine',
+  base: process.env.NODE_ENV === 'development' ? '' : '/page',
   plugins: [
   react(),
   hmrPlugin,
