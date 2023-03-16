@@ -29,14 +29,37 @@ export function univerContainer(demo, { toolbar = false, width = '100%', height 
             const dialog = document.querySelector("#dialog");
             const dialogBody = dialog.querySelector(".dialog-body");
             dialogBody.innerHTML = '';
-            dialogBody.appendChild(univerContainer(demo, { toolbar: true, height: 'calc(100vh - 170px)', isFullscreen: false }))
+            if (demo === 'sheet') {
+                setFullscreenContainer(div, btnFullscreen)
+            } else {
+                dialogBody.appendChild(univerContainer(demo, { toolbar: true, height: 'calc(100vh - 170px)', isFullscreen: false }))
+
+            }
             dialog.style.display = "block";
+
+
+
         })
     }
 
 
     return div
 }
+
+function setFullscreenContainer(container, btnFullscreen) {
+    container.style.width = window.innerWidth - 200 + 'px'
+    container.style.height = window.innerHeight - 200 + 'px'
+    container.style.position = 'fixed'
+    container.style.left = '100px'
+    container.style.top = '100px'
+    container.classList.add('activeUniver')
+
+    container.style.zIndex = 10000
+    var myEvent = new Event('resize'); window.dispatchEvent(myEvent)
+    btnFullscreen.style.display = 'none'
+}
+
+
 
 export function addUniver(vEditor, text) {
     setTimeout(() => {
@@ -270,7 +293,6 @@ export function initSlideNew(setting) {
         uiSlidesConfig
     })
     setTimeout(() => {
-
         universlide._context.getPluginManager().getPluginByName('slide').getCanvasView().scrollToCenter()
     }, 0);
 }

@@ -182,14 +182,36 @@ export function initDialog() {
 
   closeDialogBtn.addEventListener("click", () => {
     dialog.style.display = "none";
+    setBackFullscreenContainer()
   });
 
   cancelBtn.addEventListener("click", () => {
     dialog.style.display = "none";
+    setBackFullscreenContainer()
   });
 
   confirmBtn.addEventListener("click", () => {
     // 执行确认操作
     dialog.style.display = "none";
+    setBackFullscreenContainer()
   });
+}
+
+export function setBackFullscreenContainer() {
+  const container = document.querySelector('.activeUniver');
+
+  if (!container) return
+
+  const btnFullscreen = container.querySelector('.btn-fullscreen')
+
+  container.style.width = '100%'
+  container.style.height = '360px'
+  container.style.position = 'unset'
+  container.style.left = 'unset'
+  container.style.top = 'unset'
+  container.classList.remove('activeUniver')
+
+  container.style.zIndex = 'unset'
+  const myEvent = new Event('resize'); window.dispatchEvent(myEvent)
+  btnFullscreen.style.display = 'block'
 }
