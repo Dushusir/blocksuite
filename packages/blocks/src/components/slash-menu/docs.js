@@ -197,11 +197,13 @@ export function initSheetNew(tableHTML, setting) {
                 // columnCount,
                 status: 1,
                 cellData,
-                mergeData,
-                rowData,
-                columnData
             }
         }
+    }
+    if(isPasteSheet){
+        config.sheets['sheet-01'].mergeData = mergeData;
+        config.sheets['sheet-01'].rowData = rowData;
+        config.sheets['sheet-01'].columnData = columnData;
     }
     const coreConfig = Object.assign({}, DEFAULT_WORKBOOK_DATA, config)
 
@@ -361,6 +363,30 @@ export function stopImmediatePropagation(container) {
         e.stopImmediatePropagation()
     });
     container && container.addEventListener('mousemove', (e) => {
+        e.stopImmediatePropagation()
+    });
+    container && container.addEventListener('keydown', (e) => {
+        e.stopImmediatePropagation()
+    });
+    container && container.addEventListener('keyup', (e) => {
+        e.stopImmediatePropagation()
+    });
+    container && container.addEventListener('cut', (e) => {
+        e.stopImmediatePropagation()
+    });
+    container && container.addEventListener('copy', (e) => {
+        e.stopImmediatePropagation()
+    });
+    container && container.addEventListener('paste', (e) => {
+        e.stopImmediatePropagation()
+    });
+    container && container.addEventListener('compositionstart', (e) => {
+        e.stopImmediatePropagation()
+    });
+    container && container.addEventListener('compositionupdate', (e) => {
+        e.stopImmediatePropagation()
+    });
+    container && container.addEventListener('compositionend', (e) => {
         e.stopImmediatePropagation()
     });
 }
