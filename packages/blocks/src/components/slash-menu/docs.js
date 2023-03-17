@@ -1,5 +1,7 @@
 export function univerContainer(demo, { toolbar = false, width = '100%', height = '360px', isFullscreen = true } = {}) {
 
+    let isPasteSheet = demo.indexOf('universheet') !== -1;
+
     const div = document.createElement('div');
     const univerid = makeid(6)
 
@@ -11,7 +13,8 @@ export function univerContainer(demo, { toolbar = false, width = '100%', height 
 
     let config = {
         toolbar,
-        refs: div
+        refs: div,
+        isPasteSheet
     }
 
     if (!isFullscreen) {
@@ -21,6 +24,7 @@ export function univerContainer(demo, { toolbar = false, width = '100%', height 
     initUniverNew(demo, config)
     stopImmediatePropagation(div)
 
+
     if (isFullscreen) {
         div.insertAdjacentHTML('afterbegin', '<span class="btn-fullscreen"><svg t="1678777083701" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M339.432 63.594H99.944c-19.851 0-36 16.149-36 36v239.488c0 17.673 14.327 32 32 32s32-14.327 32-32V127.594h211.487c17.673 0 32-14.327 32-32 0.001-17.673-14.326-32-31.999-32zM339.432 895.503H127.944V684.016c0-17.673-14.327-32-32-32s-32 14.327-32 32v239.487c0 19.851 16.149 36 36 36h239.487c17.673 0 32-14.327 32-32s-14.326-32-31.999-32zM928 651.915c-17.673 0-32 14.327-32 32v211.487H684.513c-17.673 0-32 14.327-32 32s14.327 32 32 32H924c19.851 0 36-16.149 36-36V683.915c0-17.673-14.327-32-32-32zM924 64.151H684.513c-17.673 0-32 14.327-32 32s14.327 32 32 32H896v211.488c0 17.673 14.327 32 32 32s32-14.327 32-32V100.151c0-19.851-16.149-36-36-36z" fill=""></path></svg></span>');
         const btnFullscreen = div.querySelector('.btn-fullscreen');
@@ -29,7 +33,7 @@ export function univerContainer(demo, { toolbar = false, width = '100%', height 
             const dialog = document.querySelector("#dialog");
             const dialogBody = dialog.querySelector(".dialog-body");
             dialogBody.innerHTML = '';
-            if (demo === 'sheet') {
+            if (demo === 'sheet' || isPasteSheet) {
                 setFullscreenContainer(div, btnFullscreen)
             } else {
                 dialogBody.appendChild(univerContainer(demo, { toolbar: true, height: 'calc(100vh - 170px)', isFullscreen: false }))
@@ -71,9 +75,14 @@ export function addUniver(vEditor, text) {
 
 
 export function initUniverNew(content, setting) {
+
+    const { isPasteSheet } = setting
+    if (isPasteSheet) {
+        return initSheetNew(content, setting)
+    }
     switch (content) {
         case 'sheet':
-            initSheetNew(setting)
+            initSheetNew(content, setting)
             break;
         case 'doc':
             initDocNew(setting)
@@ -95,15 +104,42 @@ export function initUniverNew(content, setting) {
     }
 }
 
-export function initSheetNew(setting) {
-    const { toolbar, refs } = setting
+export function initSheetNew(tableHTML, setting) {
+    const { toolbar, refs, isPasteSheet } = setting
     let cellData = {}
+    let mergeData = {}
+    let rowData = []
+    let columnData = []
 
-    cellData = {
-        0: {
-            0: {
-                m: '',
-                v: ''
+    if (isPasteSheet) {
+        const { BaseComponent } = UniverPreactTs
+        const { handelTableToJson, handleTableColgroup, handleTableRowGroup, handleTableMergeData } = BaseComponent
+        const data = handelTableToJson(tableHTML)
+        const colInfo = handleTableColgroup(tableHTML);
+        columnData = colInfo.map(w => {
+            return { w }
+        })
+        const rowInfo = handleTableRowGroup(tableHTML);
+        rowData = rowInfo.map(h => {
+            return { h }
+        })
+
+        const tableData = handleTableMergeData(data);
+        mergeData = tableData.mergeData;
+
+        data.forEach((row, i) => {
+            cellData[i] = {}
+            row.forEach((column, j) => {
+                cellData[i][j] = column
+            })
+        })
+    } else {
+        cellData = {
+            '0': {
+                '0': {
+                    m: '',
+                    v: ''
+                }
             }
         }
     }
@@ -160,7 +196,10 @@ export function initSheetNew(setting) {
                 name: 'sheet1',
                 // columnCount,
                 status: 1,
-                cellData
+                cellData,
+                mergeData,
+                rowData,
+                columnData
             }
         }
     }

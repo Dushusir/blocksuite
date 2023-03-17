@@ -1,9 +1,10 @@
 import {
+  addUniver,
   getCurrentBlockRange,
   getDefaultPageBlock,
   getRichTextByModel,
   handleBlockSelectionBatchDelete,
-  OpenBlockInfo,
+  OpenBlockInfo
 } from '@blocksuite/blocks';
 import {
   deleteModelsByRange,
@@ -34,6 +35,7 @@ export class PasteManager {
   }
 
   public handlePaste = async (e: ClipboardEvent) => {
+    console.log('paste', e)
     const clipboardData = e.clipboardData;
     if (clipboardData) {
       const isPlainText = PasteManager._isPlainText(clipboardData);
@@ -138,6 +140,34 @@ export class PasteManager {
       optimalClip?.type === CLIPBOARD_MIMETYPE.HTML &&
       !shouldConvertMarkdown
     ) {
+      // universheet paste,need generate sheet
+      if (optimalClip.data.indexOf('universheet') !== -1) {
+
+        const richText = getRichTextByModel(maybeModel);
+        const vEditor = richText?.vEditor;
+        const ke = new KeyboardEvent('keydown', {
+          bubbles: true, cancelable: true, keyCode: 13
+        });
+        setTimeout(() => {
+          addUniver(vEditor, optimalClip.data)
+          vEditor._rootElement.dispatchEvent(ke);
+        }, 0);
+        return [{
+          "flavour": "affine:paragraph",
+          "type": "text",
+          "text": [
+            {
+              "insert": "",
+            }
+          ],
+          "children": []
+        }, {
+          flavour: 'affine:paragraph',
+          type: 'text',
+          text: [{ insert: '' }],
+          children: [],
+        }];
+      }
       return this._editor.contentParser.htmlText2Block(optimalClip.data);
     }
 

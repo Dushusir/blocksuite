@@ -6,6 +6,7 @@ import {
   ImageIcon20,
   NowIcon,
   paragraphConfig,
+  PasteIcon,
   // PasteIcon,
   TodayIcon,
   TomorrowIcon,
@@ -66,8 +67,6 @@ function insertContent(model: BaseBlockModel, text: string) {
   });
   vEditor._rootElement.dispatchEvent(ke);
   console.log('vEditor._rootElement', vEditor._rootElement);
-
-
 }
 
 const dividerItem: SlashItem = {
@@ -264,15 +263,15 @@ export const menuGroups: { name: string; items: SlashItem[] }[] = [
           toast('Copied to clipboard');
         },
       },
-      // {
-      //   name: 'Paste',
-      //   icon: PasteIcon,
-      //   action: async ({ model }) => {
-      //     const copiedText = await navigator.clipboard.readText();
-      //     console.log('copiedText', copiedText);
-      //     insertContent(model, copiedText);
-      //   },
-      // },
+      {
+        name: 'Paste',
+        icon: PasteIcon,
+        action: async ({ model }) => {
+          const copiedText = await navigator.clipboard.readText();
+          console.log('copiedText', copiedText);
+          insertContent(model, copiedText);
+        },
+      },
       {
         name: 'Duplicate',
         icon: DuplicateIcon,
