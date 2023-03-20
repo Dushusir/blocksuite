@@ -36,7 +36,7 @@ export type SlashItem = {
   action: ({ page, model }: { page: Page; model: BaseBlockModel }) => void;
 };
 
-function insertContent(model: BaseBlockModel, text: string) {
+export function insertContent(model: BaseBlockModel, text: string) {
   if (!model.text) {
     throw new Error("Can't insert text! Text not found");
   }
@@ -51,7 +51,7 @@ function insertContent(model: BaseBlockModel, text: string) {
   // hack: sheet/doc/slide
   const docs = ['sheet', 'doc', 'slide']
   if (docs.includes(text)) {
-    addUniver(vEditor, text)
+    addUniver(vEditor._rootElement, text)
     // text = '';
     // return
   }
@@ -66,7 +66,6 @@ function insertContent(model: BaseBlockModel, text: string) {
     bubbles: true, cancelable: true, keyCode: 13
   });
   vEditor._rootElement.dispatchEvent(ke);
-  console.log('vEditor._rootElement', vEditor._rootElement);
 }
 
 const dividerItem: SlashItem = {
@@ -90,8 +89,6 @@ export const menuGroups: { name: string; items: SlashItem[] }[] = [
         name: 'Sheet',
         icon: TodayIcon,
         action: ({ model }) => {
-          const date = new Date();
-          const strTime = date.toISOString().split('T')[0];
           insertContent(model, 'sheet');
         },
       },
@@ -99,8 +96,6 @@ export const menuGroups: { name: string; items: SlashItem[] }[] = [
         name: 'Doc',
         icon: ImageIcon20,
         action: ({ model }) => {
-          const date = new Date();
-          const strTime = date.toISOString().split('T')[0];
           insertContent(model, 'doc');
         },
       },
@@ -108,8 +103,6 @@ export const menuGroups: { name: string; items: SlashItem[] }[] = [
         name: 'Slide',
         icon: NowIcon,
         action: ({ model }) => {
-          const date = new Date();
-          const strTime = date.toISOString().split('T')[0];
           insertContent(model, 'slide');
         },
       },

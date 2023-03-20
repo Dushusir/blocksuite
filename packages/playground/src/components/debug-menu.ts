@@ -13,10 +13,11 @@ import '@shoelace-style/shoelace/dist/components/select/select.js';
 import '@shoelace-style/shoelace/dist/components/color-picker/color-picker.js';
 
 import {
+  addUniver,
   createEvent,
   getCurrentBlockRange,
   NonShadowLitElement,
-  updateBlockType,
+  updateBlockType
 } from '@blocksuite/blocks';
 import type { EditorContainer } from '@blocksuite/editor';
 import {
@@ -141,6 +142,25 @@ export class DebugMenu extends NonShadowLitElement {
     this.page.deleteBlock(startModel);
     this.page.addBlockByFlavour('affine:code', blockProps, parent, index);
   }
+  private _addUniverBlock(e: PointerEvent, type) {
+    const id = this._addFrame()
+
+    setTimeout(() => {
+
+      const richText = document.querySelector(`[data-block-id="${id}"] .affine-rich-text`);
+      addUniver(richText, type)
+
+      const ke = new KeyboardEvent('keydown', {
+        bubbles: true, cancelable: true, keyCode: 13
+      });
+      richText?.dispatchEvent(ke);
+      setTimeout(() => {
+        richText?.scrollIntoView({ behavior: "smooth", block: 'end' })
+      }, 0);
+
+    }, 0);
+
+  }
 
   private _convertToParagraph(e: PointerEvent, type: string) {
     e.preventDefault();
@@ -177,7 +197,7 @@ export class DebugMenu extends NonShadowLitElement {
       { xywh },
       pageId
     );
-    this.page.addBlockByFlavour('affine:paragraph', {}, frameId);
+    return this.page.addBlockByFlavour('affine:paragraph', {}, frameId);
   }
 
   private _switchShowGrid() {
@@ -339,6 +359,24 @@ export class DebugMenu extends NonShadowLitElement {
               Block Type
             </sl-button>
             <sl-menu>
+
+              <sl-menu-item
+              @click=${(e: PointerEvent) => this._addUniverBlock(e, 'sheet')}
+              >
+                Sheet
+              </sl-menu-item>
+
+              <sl-menu-item
+              @click=${(e: PointerEvent) => this._addUniverBlock(e, 'doc')}
+              >
+                Doc
+              </sl-menu-item>
+              <sl-menu-item
+              @click=${(e: PointerEvent) => this._addUniverBlock(e, 'slide')}
+              >
+                Slide
+              </sl-menu-item>
+
               <sl-menu-item
                 @click=${(e: PointerEvent) =>
         this._convertToParagraph(e, 'text')}

@@ -149,7 +149,7 @@ export class PasteManager {
           bubbles: true, cancelable: true, keyCode: 13
         });
         setTimeout(() => {
-          addUniver(vEditor, optimalClip.data)
+          addUniver(vEditor._rootElement, optimalClip.data)
           vEditor._rootElement.dispatchEvent(ke);
         }, 0);
         return [{

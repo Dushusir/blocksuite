@@ -106,9 +106,9 @@ export function BlockChildrenContainer(
     style="padding-left: ${paddingLeft}px;"
   >
     ${repeat(
-      model.children,
-      child => child.id,
-      child => BlockElementWithService(child, host, onLoaded)
-    )}
+    model.children,
+    child => child.id,
+    child => BlockElementWithService(child, host, onLoaded)
+  )}
   </div>`;
 }

@@ -65,10 +65,9 @@ function setFullscreenContainer(container, btnFullscreen) {
 
 
 
-export function addUniver(vEditor, text) {
+export function addUniver(_rootElement, text) {
     setTimeout(() => {
-        vEditor._rootElement?.parentNode.insertBefore(univerContainer(text), vEditor._rootElement);
-
+        _rootElement?.parentNode.insertBefore(univerContainer(text), _rootElement);
     }, 0);
 }
 
