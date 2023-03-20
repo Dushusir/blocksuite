@@ -1,6 +1,6 @@
 export function univerContainer(demo, { toolbar = false, width = '100%', height = '360px', isFullscreen = true } = {}) {
 
-    let isPasteSheet = demo.indexOf('universheet') !== -1;
+    let isPasteSheet = (demo.indexOf('<table') > -1 && demo.indexOf('<td') > -1);
 
     const div = document.createElement('div');
     const univerid = makeid(6)
