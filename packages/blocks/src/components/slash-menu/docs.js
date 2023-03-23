@@ -74,7 +74,9 @@ export function addUniver(_rootElement, text) {
 
 
 export function initUniverNew(content, setting) {
-
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize', {}));
+    }, 0);
     const { isPasteSheet } = setting
     if (isPasteSheet) {
         return initSheetNew(content, setting)
