@@ -33,12 +33,12 @@ export function univerContainer(demo, { toolbar = false, width = '100%', height 
             const dialog = document.querySelector("#dialog");
             const dialogBody = dialog.querySelector(".dialog-body");
             dialogBody.innerHTML = '';
-            if (demo === 'sheet' || isPasteSheet) {
+            // if (demo === 'sheet' || isPasteSheet) {
                 setFullscreenContainer(div, btnFullscreen)
-            } else {
-                dialogBody.appendChild(univerContainer(demo, { toolbar: true, height: 'calc(100vh - 170px)', isFullscreen: false }))
+            // } else {
+            //     dialogBody.appendChild(univerContainer(demo, { toolbar: true, height: 'calc(100vh - 170px)', isFullscreen: false }))
 
-            }
+            // }
             dialog.style.display = "block";
 
 
