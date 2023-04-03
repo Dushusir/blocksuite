@@ -1,3 +1,7 @@
+const ipAddress = '47.100.177.253:8500'
+export const urlCollbaration = 'http://luckysheet.lashuju.com/univer/'
+const univer_config = { "type": "sheet", "template": "DEMO1" }
+
 export function univerContainer(demo, { toolbar = false, width = '100%', height = '360px', isFullscreen = true } = {}) {
 
     let isPasteSheet = (demo.indexOf('<table') > -1 && demo.indexOf('<td') > -1);
@@ -11,10 +15,17 @@ export function univerContainer(demo, { toolbar = false, width = '100%', height 
     div.style.width = width;
     div.style.height = height;
 
+    let universheet = null
+    let univerId = null
     let config = {
         toolbar,
         refs: div,
-        isPasteSheet
+        isPasteSheet,
+        success: (universheet) => {
+            universheet = universheet;
+
+            univerId = universheet.getWorkBook().getContext().getUniver().getGlobalContext().getUniverId();
+        }
     }
 
     if (!isFullscreen) {
@@ -26,15 +37,16 @@ export function univerContainer(demo, { toolbar = false, width = '100%', height 
 
 
     if (isFullscreen) {
-        div.insertAdjacentHTML('afterbegin', '<span class="btn-fullscreen"><svg t="1678777083701" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M339.432 63.594H99.944c-19.851 0-36 16.149-36 36v239.488c0 17.673 14.327 32 32 32s32-14.327 32-32V127.594h211.487c17.673 0 32-14.327 32-32 0.001-17.673-14.326-32-31.999-32zM339.432 895.503H127.944V684.016c0-17.673-14.327-32-32-32s-32 14.327-32 32v239.487c0 19.851 16.149 36 36 36h239.487c17.673 0 32-14.327 32-32s-14.326-32-31.999-32zM928 651.915c-17.673 0-32 14.327-32 32v211.487H684.513c-17.673 0-32 14.327-32 32s14.327 32 32 32H924c19.851 0 36-16.149 36-36V683.915c0-17.673-14.327-32-32-32zM924 64.151H684.513c-17.673 0-32 14.327-32 32s14.327 32 32 32H896v211.488c0 17.673 14.327 32 32 32s32-14.327 32-32V100.151c0-19.851-16.149-36-36-36z" fill=""></path></svg></span>');
+        div.insertAdjacentHTML('afterbegin', '<button class="btn-univer-copy">复制</button><span class="btn-fullscreen"><svg t="1678777083701" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M339.432 63.594H99.944c-19.851 0-36 16.149-36 36v239.488c0 17.673 14.327 32 32 32s32-14.327 32-32V127.594h211.487c17.673 0 32-14.327 32-32 0.001-17.673-14.326-32-31.999-32zM339.432 895.503H127.944V684.016c0-17.673-14.327-32-32-32s-32 14.327-32 32v239.487c0 19.851 16.149 36 36 36h239.487c17.673 0 32-14.327 32-32s-14.326-32-31.999-32zM928 651.915c-17.673 0-32 14.327-32 32v211.487H684.513c-17.673 0-32 14.327-32 32s14.327 32 32 32H924c19.851 0 36-16.149 36-36V683.915c0-17.673-14.327-32-32-32zM924 64.151H684.513c-17.673 0-32 14.327-32 32s14.327 32 32 32H896v211.488c0 17.673 14.327 32 32 32s32-14.327 32-32V100.151c0-19.851-16.149-36-36-36z" fill=""></path></svg></span>');
         const btnFullscreen = div.querySelector('.btn-fullscreen');
+        const btnUniverCopy = div.querySelector('.btn-univer-copy');
         btnFullscreen.addEventListener('click', () => {
             // eslint-disable-next-line no-undef
             const dialog = document.querySelector("#dialog");
             const dialogBody = dialog.querySelector(".dialog-body");
             dialogBody.innerHTML = '';
             // if (demo === 'sheet' || isPasteSheet) {
-                setFullscreenContainer(div, btnFullscreen)
+            setFullscreenContainer(div, btnFullscreen)
             // } else {
             //     dialogBody.appendChild(univerContainer(demo, { toolbar: true, height: 'calc(100vh - 170px)', isFullscreen: false }))
 
@@ -43,6 +55,12 @@ export function univerContainer(demo, { toolbar = false, width = '100%', height 
 
 
 
+        })
+
+        btnUniverCopy.addEventListener('click', () => {
+            const url = urlCollbaration + '?id=' + univerId;
+            copyTextToClipboard(url);
+            alert('copy url success:  ' + url)
         })
     }
 
@@ -81,6 +99,12 @@ export function initUniverNew(content, setting) {
     if (isPasteSheet) {
         return initSheetNew(content, setting)
     }
+    // handle http://luckysheet.lashuju.com/univer/?id=nxt0kDHPz3
+    else if (content.indexOf('luckysheet.lashuju.com/univer/?id=') !== -1) {
+        const univerId = content.split('?id=')[1];
+        setting.univerId = univerId
+        return initSheetByDemoNew(content, setting)
+    }
     switch (content) {
         case 'sheet':
             initSheetNew(content, setting)
@@ -106,7 +130,7 @@ export function initUniverNew(content, setting) {
 }
 
 export function initSheetNew(tableHTML, setting) {
-    const { toolbar, refs, isPasteSheet } = setting
+    const { toolbar, refs, isPasteSheet, success: cb } = setting
     let cellData = {}
     let mergeData = {}
     let rowData = []
@@ -114,8 +138,8 @@ export function initSheetNew(tableHTML, setting) {
 
     if (isPasteSheet) {
         const { BaseComponent } = UniverPreactTs
-        const { handelTableToJson, handleTableColgroup, handleTableRowGroup, handleTableMergeData,handelExcelToJson,handlePlainToJson } = BaseComponent
-        
+        const { handelTableToJson, handleTableColgroup, handleTableRowGroup, handleTableMergeData, handelExcelToJson, handlePlainToJson } = BaseComponent
+
         // const data = handelTableToJson(tableHTML)
         // const colInfo = handleTableColgroup(tableHTML);
         // const rowInfo = handleTableRowGroup(tableHTML);
@@ -141,7 +165,7 @@ export function initSheetNew(tableHTML, setting) {
         columnData = colInfo.map(w => {
             return { w }
         })
-        
+
         rowData = rowInfo.map(h => {
             return { h }
         })
@@ -166,8 +190,7 @@ export function initSheetNew(tableHTML, setting) {
         }
     }
 
-
-    const { univerSheetCustom, CommonPluginData } = UniverPreactTs
+    const { univerSheetCustom, CommonPluginData } = UniverPreactTs;
     const { DEFAULT_WORKBOOK_DATA } = CommonPluginData
     const uiSheetsConfig = {
         container: refs,
@@ -210,7 +233,7 @@ export function initSheetNew(tableHTML, setting) {
         id: makeid(6),
         styles: null,
         namedRanges: null,
-        sheetOrder: [],
+        sheetOrder: ['sheet-01'],
         sheets: {
             'sheet-01': {
                 type: 0,
@@ -219,25 +242,126 @@ export function initSheetNew(tableHTML, setting) {
                 // columnCount,
                 status: 1,
                 cellData,
+                freezeColumn: 1,
+                rowCount: 1000,
+                columnCount: 20,
+                freezeRow: 1,
+                zoomRatio: 1,
+                scrollTop: 200,
+                scrollLeft: 100,
+                defaultColumnWidth: 93,
+                defaultRowHeight: 27,
+                showGridlines: 1,
+                rowTitle: {
+                    width: 46,
+                    hidden: 0,
+                },
+                columnTitle: {
+                    height: 20,
+                    hidden: 0,
+                },
+                rowData,
+                columnData,
+                mergeData
             }
         }
     }
-    if(isPasteSheet){
+    if (isPasteSheet) {
         config.sheets['sheet-01'].mergeData = mergeData;
         config.sheets['sheet-01'].rowData = rowData;
         config.sheets['sheet-01'].columnData = columnData;
     }
-    const coreConfig = Object.assign({}, DEFAULT_WORKBOOK_DATA, config)
+    const coreConfig = Object.assign({}, DEFAULT_WORKBOOK_DATA, config);
 
-    univerSheetCustom({
-        coreConfig,
-        uiSheetsConfig,
-        baseSheetsConfig
+    // 协同
+    newDocs('http://' + ipAddress + '/new', univer_config, (json) => {
+
+        // offline
+        if (json == null) {
+            const universheet = univerSheetCustom({
+                coreConfig,
+                uiSheetsConfig,
+                baseSheetsConfig
+            })
+
+            cb && cb(universheet)
+
+            return
+        }
+
+
+        const id = json.id;
+        const config = json.config;
+
+        if (config === 'default') {
+
+            updateDocs(id, coreConfig, () => {
+                const universheet = univerSheetCustom({
+                    univerConfig: {
+                        id
+                    },
+                    coreConfig,
+                    uiSheetsConfig,
+                    baseSheetsConfig,
+                    collaborationConfig: {
+                        url: `${'ws://' + ipAddress + '/ws/'}${id}`
+                    }
+                })
+
+                cb && cb(universheet)
+            })
+        }
     })
+
+
+    // univerSheetCustom({
+    //     coreConfig,
+    //     uiSheetsConfig,
+    //     baseSheetsConfig
+    // })
 }
 export function initSheetByDemoNew(demo, setting) {
-    const { toolbar, refs } = setting
+    const { toolbar, refs,univerId, success: cb } = setting
     const { univerSheetCustom, CommonPluginData, UniverCore } = UniverPreactTs
+
+    const uiSheetsConfig = {
+        container: refs,
+        layout: {
+            sheetContainerConfig: {
+                infoBar: false,
+                formulaBar: false,
+                toolbar,
+                sheetBar: false,
+                countBar: false,
+                rightMenu: false
+            }
+        }
+    }
+
+
+    if(univerId){
+        openDocs(univerId,(json)=>{
+          const universheetconfig = json.config;
+          const id = json.id;
+      
+          const universheet = univerSheetCustom({
+              univerConfig:{
+                  id
+              },
+              coreConfig:JSON.parse(universheetconfig),
+              uiSheetsConfig,
+              collaborationConfig:{
+                  url: `${'ws://'+ipAddress+'/ws/'}${id}`
+              }
+          });
+      
+          cb && cb(universheet)
+      
+      })
+      
+      return
+      }
+
     const {
         DEFAULT_WORKBOOK_DATA_DEMO1,
         DEFAULT_WORKBOOK_DATA_DEMO2,
@@ -255,19 +379,7 @@ export function initSheetByDemoNew(demo, setting) {
         DEMO5: DEFAULT_WORKBOOK_DATA_DEMO5,
         DEMO6: DEFAULT_WORKBOOK_DATA_DEMO6
     }
-    const uiSheetsConfig = {
-        container: refs,
-        layout: {
-            sheetContainerConfig: {
-                infoBar: false,
-                formulaBar: false,
-                toolbar,
-                sheetBar: false,
-                countBar: false,
-                rightMenu: false
-            }
-        }
-    }
+
     const baseSheetsConfig = {
         selections: {
             'sheet-01': [
@@ -291,11 +403,53 @@ export function initSheetByDemoNew(demo, setting) {
 
     coreConfig.id = makeid(6)
     coreConfig.sheetOrder = []
-    univerSheetCustom({
-        coreConfig,
-        uiSheetsConfig,
-        baseSheetsConfig
-    })
+
+    
+    newDocs('http://'+ipAddress+'/new',univer_config,(json)=>{
+
+        // offline
+        if(json == null){
+            const universheet = univerSheetCustom({
+            coreConfig,
+            uiSheetsConfig,
+            baseSheetsConfig
+            })
+        
+            cb && cb(universheet)
+
+            return
+        }
+
+
+        const id = json.id;
+        const config = json.config;
+
+        if(config === 'default'){
+
+            updateDocs(id,coreConfig,()=>{
+            const universheet = univerSheetCustom({
+                univerConfig:{
+                    id
+                },
+                coreConfig,
+                uiSheetsConfig,
+                baseSheetsConfig,
+                collaborationConfig:{
+                url: `${'ws://'+ipAddress+'/ws/'}${id}`
+            }
+            })
+            
+            cb && cb(universheet)
+            })
+        }
+        
+        })
+
+    // univerSheetCustom({
+    //     coreConfig,
+    //     uiSheetsConfig,
+    //     baseSheetsConfig
+    // })
 }
 export function initDocNew(setting) {
     const { toolbar, refs } = setting
@@ -410,5 +564,123 @@ export function stopImmediatePropagation(container) {
     });
     container && container.addEventListener('compositionend', (e) => {
         e.stopImmediatePropagation()
+    });
+}
+
+
+// 协同
+
+function newDocs(url, params, cb) {
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+    }).then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error(response.statusText);
+        }
+    })
+        .then(document => {
+            // 处理获取到的文档信息
+            console.log(document);
+            cb && cb(document)
+        })
+        .catch(error => {
+            console.error(error);
+            cb(null)
+        });
+
+}
+
+function openDocs(id, cb) {
+    // 定义请求参数
+    const data = new FormData();
+    data.append('id', id);
+
+    // 创建 XMLHttpRequest 对象
+    const xhr = new XMLHttpRequest();
+
+    // 监听请求完成事件
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            const document = JSON.parse(xhr.responseText);
+            // 处理获取到的文档信息
+            console.log(document);
+            cb && cb(document)
+        } else {
+            console.error(xhr.statusText);
+        }
+    };
+
+    // 发送 POST 请求
+    xhr.open('POST', 'http://' + ipAddress + '/open', true);
+    xhr.send(data);
+
+}
+
+function updateDocs(id, config, cb) {
+    // 定义请求参数
+    const data = new FormData();
+    data.append('id', id);
+    data.append('config', JSON.stringify(config));
+
+    // 创建 XMLHttpRequest 对象
+    const xhr = new XMLHttpRequest();
+
+    // 监听请求完成事件
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            const document = JSON.parse(xhr.responseText);
+            // 处理获取到的文档信息
+            console.log(document);
+            cb && cb(document)
+        } else {
+            console.error(xhr.statusText);
+        }
+    };
+
+    // 发送 POST 请求
+    xhr.open('POST', 'http://' + ipAddress + '/update', true);
+    xhr.send(data);
+
+}
+
+function fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Fallback: Copying text command was ' + msg);
+    } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+    }
+
+    document.body.removeChild(textArea);
+}
+
+function copyTextToClipboard(text) {
+    if (!navigator.clipboard) {
+        fallbackCopyTextToClipboard(text);
+        return;
+    }
+    navigator.clipboard.writeText(text).then(function () {
+        console.log('Async: Copying to clipboard was successful!');
+    }, function (err) {
+        console.error('Async: Could not copy text: ', err);
     });
 }

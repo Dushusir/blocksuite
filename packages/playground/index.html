@@ -1,121 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BlockSuite Playground</title>
-    <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background-color: var(--affine-page-background);
-        transition: background-color 0.3s;
-      }
 
-      * {
-        box-sizing: border-box;
-      }
-      .affine-default-page-block-title-container {
-        margin-top: 78px;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlockSuite Playground</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: var(--affine-page-background);
+      transition: background-color 0.3s;
+    }
 
-      .dialog {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 9999;
-        display: none;
-        background-color: rgba(0, 0, 0, 0.5);
-      }
+    * {
+      box-sizing: border-box;
+    }
 
-      .dialog-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        background-color: #fff;
-      }
+    .affine-default-page-block-title-container {
+      margin-top: 78px;
+    }
 
-      .dialog-title {
-        margin: 0;
-      }
+    .dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 9999;
+      display: none;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
 
-      .close-dialog-btn {
-        border: none;
-        background-color: transparent;
-        font-size: 1.5rem;
-        cursor: pointer;
-      }
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: #fff;
+    }
 
-      .dialog-body {
-        padding: 1rem;
-        background-color: #fff;
-        height: calc(100vh - 159px);
-      }
+    .dialog-title {
+      margin: 0;
+    }
 
-      .dialog-footer {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        padding: 1rem;
-        background-color: #fff;
-      }
+    .close-dialog-btn {
+      border: none;
+      background-color: transparent;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
 
-      .dialog-btn {
-        margin-left: 1rem;
-        border: none;
-        background-color: #007bff;
-        color: #fff;
-        padding: 0.5rem 1rem;
-        border-radius: 0.25rem;
-        cursor: pointer;
-      }
+    .dialog-body {
+      padding: 1rem;
+      background-color: #fff;
+      height: calc(100vh - 159px);
+    }
 
-      .dialog-btn:hover {
-        background-color: #0069d9;
-      }
+    .dialog-footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 1rem;
+      background-color: #fff;
+    }
 
-      .btn-fullscreen {
-        position: absolute;
-        top: 0;
-        right: 0;
-        z-index: 2;
-        padding: 4px;
-        border-radius: 4px;
-      }
+    .dialog-btn {
+      margin-left: 1rem;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+    }
 
-      .btn-fullscreen:hover {
-        cursor: pointer;
-      }
+    .dialog-btn:hover {
+      background-color: #0069d9;
+    }
 
-      .univer-dev-operation {
-        display: none;
-      }
-      .univer-demo {
-        position: relative;
-      }
-    </style>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-  </head>
-  <body>
-    <script type="module" src="./src/main.ts"></script>
-    <div id="app-root"></div>
-    <div id="dialog" class="dialog">
-      <div class="dialog-header">
-        <h3 class="dialog-title">Univer</h3>
-        <button id="close-dialog" class="close-dialog-btn">×</button>
-      </div>
-      <div class="dialog-body">这是对话框的内容。</div>
-      <div class="dialog-footer">
-        <button id="cancel-btn" class="dialog-btn">取消</button>
-        <button id="confirm-btn" class="dialog-btn">确认</button>
-      </div>
+    .btn-fullscreen {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 2;
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+    .btn-univer-copy {
+      position: absolute;
+      top: 0;
+      right: 37px;
+      z-index: 2;
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+    .btn-fullscreen:hover {
+      cursor: pointer;
+    }
+
+    .univer-dev-operation {
+      display: none;
+    }
+
+    .univer-demo {
+      position: relative;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+  <script type="module" src="./src/main.ts"></script>
+  <div id="app-root"></div>
+  <div id="dialog" class="dialog">
+    <div class="dialog-header">
+      <h3 class="dialog-title">Univer</h3>
+      <button id="close-dialog" class="close-dialog-btn">×</button>
     </div>
-    <script src="univer-preact-ts.iife.js"></script>
-  </body>
+    <div class="dialog-body">这是对话框的内容。</div>
+    <div class="dialog-footer">
+      <button id="cancel-btn" class="dialog-btn">取消</button>
+      <button id="confirm-btn" class="dialog-btn">确认</button>
+    </div>
+  </div>
+  <script src="univer-preact-ts.iife.js"></script>
+</body>
+
 </html>

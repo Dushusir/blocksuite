@@ -138,10 +138,10 @@ export class PasteManager {
       MarkdownUtils.checkIfTextContainsMd(textClipData);
     if (
       optimalClip?.type === CLIPBOARD_MIMETYPE.HTML &&
-      !shouldConvertMarkdown || (optimalClip.data.indexOf('<table') !== -1 && optimalClip.data.indexOf('<td') !== -1)
+      !shouldConvertMarkdown || (optimalClip.data.indexOf('<table') !== -1 && optimalClip.data.indexOf('<td') !== -1) ||(optimalClip.data.indexOf('luckysheet.lashuju.com/univer/?id=') !== -1)
     ) {
       // universheet paste,need generate sheet
-      if (optimalClip.data.indexOf('<table') !== -1 && optimalClip.data.indexOf('<td') !== -1) {
+      if (optimalClip.data.indexOf('<table') !== -1 && optimalClip.data.indexOf('<td') !== -1 || optimalClip.data.indexOf('luckysheet.lashuju.com/univer/?id=') !== -1) {
 
         const richText = getRichTextByModel(maybeModel);
         const vEditor = richText?.vEditor;
