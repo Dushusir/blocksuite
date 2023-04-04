@@ -295,8 +295,8 @@ export function initSheetNew(tableHTML, setting) {
         zoomRatio: 1,
         scrollTop: 200,
         scrollLeft: 100,
-        defaultColumnWidth: 93,
-        defaultRowHeight: 27,
+        defaultColumnWidth: 72,
+        defaultRowHeight: 19,
         showGridlines: 1,
         rowTitle: {
           width: 46,
