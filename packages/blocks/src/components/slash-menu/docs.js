@@ -97,8 +97,8 @@ export function univerContainer(
         const prompt = document.querySelector('.prompt')
         prompt.style.display = 'block'
         setTimeout(() => {
-            prompt.style.display = 'none'
-        },1000)
+          prompt.style.display = 'none'
+        }, 1000)
       }
     });
   }
@@ -127,9 +127,8 @@ export function addUniver(_rootElement, text) {
 }
 
 export function initUniverNew(content, setting) {
-  setTimeout(() => {
-    window.dispatchEvent(new Event('resize', {}));
-  }, 0);
+
+  refresh()
   const { isPasteSheet } = setting;
   if (isPasteSheet) {
     return initSheetNew(content, setting);
@@ -515,13 +514,37 @@ export function initDocNew(setting) {
     uiDocsConfig,
   });
 
-  setTimeout(() => {
+  window.addEventListener('resize', function (event) {
+    console.log('resize doc')
     univerdoc._context
       .getPluginManager()
-      .getRequirePluginByName('document')
-      .calculatePagePosition();
-  }, 0);
+      .getRequirePluginByName('document').getDocsView().scrollToCenter();
+  }, true);
 }
+
+
+function refresh(params) {
+  const rootEle = document.querySelector('.affine-default-viewport');
+  if (!rootEle) return;
+
+  var config = {
+    childList: true,
+    subtree: true,
+  };
+  var time = null;
+  new MutationObserver(() => {
+    if (time) {
+      clearTimeout(time);
+      time = null;
+    }
+
+    time = setTimeout(() => {
+
+      window.dispatchEvent(new Event('resize', {}));
+    }, 500);
+  }).observe(rootEle, config);
+}
+
 export function initSlideNew(setting) {
   const { toolbar, refs, innerLeft = false } = setting;
   const { univerSlideCustom, UniverCore, CommonPluginData } = UniverPreactTs;
@@ -546,13 +569,15 @@ export function initSlideNew(setting) {
     coreConfig,
     uiSlidesConfig,
   });
-  setTimeout(() => {
+
+  window.addEventListener('resize', function (event) {
+    console.log('resize slide')
     universlide._context
       .getPluginManager()
       .getPluginByName('slide')
       .getCanvasView()
       .scrollToCenter();
-  }, 0);
+  }, true);
 }
 
 export function makeid(length) {
