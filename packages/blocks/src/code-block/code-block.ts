@@ -185,9 +185,9 @@ export class CodeBlockComponent extends NonShadowLitElement {
       langs,
       paths: {
         // TODO: use local path
-        wasm: 'https://cdn.jsdelivr.net/npm/shiki/dist',
-        themes: 'https://cdn.jsdelivr.net/npm/shiki/themes',
-        languages: 'https://cdn.jsdelivr.net/npm/shiki/languages',
+        wasm: 'https://fastly.jsdelivr.net/npm/shiki/dist',
+        themes: 'https://fastly.jsdelivr.net/npm/shiki/themes',
+        languages: 'https://fastly.jsdelivr.net/npm/shiki/languages',
       },
     });
 
@@ -314,14 +314,14 @@ export class CodeBlockComponent extends NonShadowLitElement {
       ${this._showLangList
         ? html`<lang-list
             @selected-language-changed=${(e: CustomEvent) => {
-              this.host
-                .getService('affine:code')
-                .setLang(this.model, e.detail.language);
-              this._showLangList = false;
-            }}
+            this.host
+              .getService('affine:code')
+              .setLang(this.model, e.detail.language);
+            this._showLangList = false;
+          }}
             @dispose=${() => {
-              this._showLangList = false;
-            }}
+            this._showLangList = false;
+          }}
           ></lang-list>`
         : ''}
     </div>`;
@@ -331,12 +331,12 @@ export class CodeBlockComponent extends NonShadowLitElement {
     if (!this._optionPosition) return '';
     return html`<affine-portal
       .template=${CodeOptionTemplate({
-        model: this.model,
-        position: this._optionPosition,
-        hoverState: this.hoverState,
-        wrap: this._wrap,
-        onClickWrap: () => this._onClickWrapBtn(),
-      })}
+      model: this.model,
+      position: this._optionPosition,
+      hoverState: this.hoverState,
+      wrap: this._wrap,
+      onClickWrap: () => this._onClickWrapBtn(),
+    })}
     ></affine-portal>`;
   }
 
@@ -362,19 +362,19 @@ export class CodeBlockComponent extends NonShadowLitElement {
 
       lineNumbers.push(html`<div
         style="${styleMap({
-          top: `${top}px`,
-          height: `${height}px`,
-          position: 'absolute',
-          display: 'flex',
-        })}"
+        top: `${top}px`,
+        height: `${height}px`,
+        position: 'absolute',
+        display: 'flex',
+      })}"
       >
         <span
           style="${styleMap({
-            position: 'absolute',
-            top: '-2px',
-            height: '1em',
-            lineHeight: '1em',
-          })}"
+        position: 'absolute',
+        top: '-2px',
+        height: '1em',
+        lineHeight: '1em',
+      })}"
           >${index + 1}</span
         >
       </div>`);
@@ -402,9 +402,9 @@ export class CodeBlockComponent extends NonShadowLitElement {
             .host=${this.host}
             .model=${this.model}
             .codeBlockGetHighlighterOptions=${() => ({
-              lang: this.model.language.toLowerCase() as Lang,
-              highlighter: this._highlighter,
-            })}
+        lang: this.model.language.toLowerCase() as Lang,
+        highlighter: this._highlighter,
+      })}
           >
           </rich-text>
         </div>
