@@ -165,7 +165,7 @@ export function initUniverNew(content, setting) {
 export function initSheetNew(tableHTML, setting) {
   const { toolbar, refs, isPasteSheet, success: cb } = setting;
   let cellData = {};
-  let mergeData = {};
+  let mergeData = [];
   let rowData = [];
   let columnData = [];
 
